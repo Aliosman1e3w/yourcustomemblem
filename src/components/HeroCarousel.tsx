@@ -1,4 +1,5 @@
-import heroVideo from "@/assets/hero-video-chrome.mp4";
+import heroVideo from "@/assets/hero-video-car.mp4";
+import logoEmblem from "@/assets/logo-emblem.png";
 
 const HeroCarousel = () => {
   return (
@@ -11,24 +12,40 @@ const HeroCarousel = () => {
           muted
           playsInline
           className="w-full h-full object-cover"
+          style={{ 
+            // Smooth loop transition
+            transition: "opacity 0.3s ease-in-out"
+          }}
         >
           <source src={heroVideo} type="video/mp4" />
         </video>
         
         {/* Dark overlay for better text readability */}
-        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/70" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/80" />
       </div>
 
       {/* Hero Content */}
       <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 text-center">
         <div className="max-w-4xl mx-auto">
+          {/* Logo Emblem Image */}
+          <div className="mb-8 animate-fade-up">
+            <img 
+              src={logoEmblem} 
+              alt="Your Custom Emblem" 
+              className="w-64 md:w-80 lg:w-96 h-auto mx-auto drop-shadow-2xl"
+              style={{
+                filter: "drop-shadow(0 0 20px rgba(255,255,255,0.3))"
+              }}
+            />
+          </div>
+          
           {/* Subtitle */}
-          <p className="font-body text-sm md:text-base tracking-[0.4em] uppercase text-white/70 mb-4 animate-fade-up">
+          <p className="font-body text-sm md:text-base tracking-[0.4em] uppercase text-white/70 mb-4 animate-fade-up" style={{ animationDelay: "0.2s" }}>
             Premium Custom Emblems
           </p>
           
           {/* Main Title */}
-          <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 animate-fade-up" style={{ animationDelay: "0.2s" }}>
+          <h1 className="font-heading text-3xl md:text-5xl lg:text-6xl font-bold text-white leading-tight mb-6 animate-fade-up" style={{ animationDelay: "0.3s" }}>
             Crafted With
             <span className="block text-gradient-gold mt-2">Excellence & Precision</span>
           </h1>
@@ -40,7 +57,7 @@ const HeroCarousel = () => {
           </p>
           
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{ animationDelay: "0.6s" }}>
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{ animationDelay: "0.5s" }}>
             <a
               href="#work-samples"
               className="px-8 py-4 bg-gradient-to-r from-primary to-[#F4E4BC] text-black font-semibold tracking-wide uppercase text-sm rounded-sm hover:shadow-lg hover:shadow-primary/30 transition-all duration-300"
