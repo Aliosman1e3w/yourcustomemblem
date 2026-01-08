@@ -1,4 +1,4 @@
-import heroVideo from "@/assets/hero-video-new.mp4";
+import heroVideo from "@/assets/hero-video-chrome.mp4";
 
 const HeroCarousel = () => {
   return (
