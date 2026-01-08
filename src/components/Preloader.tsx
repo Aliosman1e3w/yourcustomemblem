@@ -13,12 +13,12 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(interval);
-          setTimeout(onComplete, 500);
+          setTimeout(onComplete, 800);
           return 100;
         }
-        return prev + 2;
+        return prev + 1;
       });
-    }, 30);
+    }, 50);
 
     return () => clearInterval(interval);
   }, [onComplete]);
