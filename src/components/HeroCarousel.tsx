@@ -1,4 +1,4 @@
-import heroVideo from "@/assets/hero-video-car.mp4";
+import heroVideo from "@/assets/hero-video-ferrari.mp4";
 import logoEmblem from "@/assets/logo-emblem.png";
 
 const HeroCarousel = () => {
