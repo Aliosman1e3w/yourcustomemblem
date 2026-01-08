@@ -138,23 +138,6 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
                 ease: "easeInOut",
               }}
             >
-              {/* Paint glow at brush tip */}
-              <motion.div
-                className="absolute -left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full"
-                style={{
-                  background: "radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(192,192,192,0.6) 40%, transparent 70%)",
-                  filter: "blur(6px)",
-                }}
-                animate={{
-                  scale: [1, 1.4, 1],
-                  opacity: [0.7, 1, 0.7],
-                }}
-                transition={{
-                  duration: 0.3,
-                  repeat: Infinity,
-                }}
-              />
-              
               {/* Paintbrush icon */}
               <motion.div
                 animate={{
