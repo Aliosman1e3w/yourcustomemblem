@@ -1,256 +1,66 @@
-import { useState, useEffect, useCallback, useRef } from "react";
-import heroEmblem1 from "@/assets/hero-emblem-1.jpg";
-import heroEmblem2 from "@/assets/hero-emblem-2.jpg";
-import heroEmblem3 from "@/assets/hero-emblem-3.jpg";
-import heroEmblem4 from "@/assets/hero-emblem-4.jpg";
-
-const slides = [
-  {
-    image: heroEmblem1,
-    title: "Precision Crafted Excellence",
-    subtitle: "Premium Materials",
-    year: "2024",
-  },
-  {
-    image: heroEmblem2,
-    title: "Artisan Craftsmanship",
-    subtitle: "Traditional Techniques",
-    year: "2024",
-  },
-  {
-    image: heroEmblem3,
-    title: "Exclusive Collection",
-    subtitle: "24K Gold Finishes",
-    year: "2024",
-  },
-  {
-    image: heroEmblem4,
-    title: "Modern Elegance",
-    subtitle: "Chrome & Blue Metallic",
-    year: "2024",
-  },
-];
+import heroVideo from "@/assets/hero-video.mp4";
 
 const HeroCarousel = () => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
-
-  const nextSlide = useCallback(() => {
-    setActiveIndex((prev) => (prev + 1) % slides.length);
-  }, []);
-
-  const goToSlide = (index: number) => {
-    if (index === activeIndex) return;
-    setActiveIndex(index);
-  };
-
-  // Auto-scroll every 4 seconds
-  useEffect(() => {
-    intervalRef.current = setInterval(nextSlide, 4000);
-    return () => {
-      if (intervalRef.current) clearInterval(intervalRef.current);
-    };
-  }, [nextSlide]);
-
-  // Reset interval when manually clicking
-  const handleClick = (index: number) => {
-    if (intervalRef.current) clearInterval(intervalRef.current);
-    goToSlide(index);
-    intervalRef.current = setInterval(nextSlide, 4000);
-  };
-
-  // Get position relative to active (circular) - now showing all 4
-  const getPosition = (index: number) => {
-    const diff = (index - activeIndex + slides.length) % slides.length;
-    if (diff === 0) return "center";
-    if (diff === 1) return "right-1";
-    if (diff === 2) return "right-2";
-    if (diff === slides.length - 1) return "left-1";
-    return "hidden";
-  };
-
   return (
-    <section id="home" className="relative min-h-screen w-full pt-32 pb-16 overflow-hidden bg-black border-b border-white/10">
-      {/* Dark background */}
-      <div className="absolute inset-0 bg-black" />
+    <section id="home" className="relative min-h-screen w-full overflow-hidden bg-black">
+      {/* Video Background */}
+      <div className="absolute inset-0">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="w-full h-full object-cover"
+        >
+          <source src={heroVideo} type="video/mp4" />
+        </video>
+        
+        {/* Dark overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/20 to-black/70" />
+      </div>
 
-      <div className="relative z-10 w-full max-w-[95vw] xl:max-w-[90vw] mx-auto px-2">
-        {/* Desktop Gallery - All 4 images visible */}
-        <div className="hidden md:flex relative items-center justify-center gap-3 h-[60vh] max-h-[520px]">
-          {slides.map((slide, index) => {
-            const position = getPosition(index);
-            const isActive = position === "center";
-            
-            // Style based on position - all 4 visible
-            let opacity = 1;
-            let zIndex = 10;
-            let flex = "0.5";
-            let height = "75%";
-            let grayscale = "60%";
-            
-            switch (position) {
-              case "center":
-                opacity = 1;
-                zIndex = 30;
-                flex = "1.8";
-                height = "100%";
-                grayscale = "0%";
-                break;
-              case "left-1":
-                opacity = 1;
-                zIndex = 20;
-                flex = "0.7";
-                height = "85%";
-                grayscale = "50%";
-                break;
-              case "right-1":
-                opacity = 1;
-                zIndex = 20;
-                flex = "0.7";
-                height = "85%";
-                grayscale = "50%";
-                break;
-              case "right-2":
-                opacity = 0.8;
-                zIndex = 15;
-                flex = "0.5";
-                height = "75%";
-                grayscale = "70%";
-                break;
-            }
-            
-            return (
-              <div
-                key={index}
-                onClick={() => handleClick(index)}
-                className="relative overflow-hidden rounded-2xl cursor-pointer border-2 border-white/30"
-                style={{
-                  flex,
-                  height,
-                  opacity,
-                  zIndex,
-                  filter: `grayscale(${grayscale})`,
-                  transition: "all 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
-                  boxShadow: isActive 
-                    ? "0 25px 50px -12px rgba(0, 0, 0, 0.4)" 
-                    : "0 10px 30px -10px rgba(0, 0, 0, 0.25)",
-                }}
-              >
-                {/* Image */}
-                <img
-                  src={slide.image}
-                  alt={slide.title}
-                  className="w-full h-full object-cover"
-                  style={{
-                    transform: isActive ? "scale(1)" : "scale(1.08)",
-                    transition: "transform 0.7s cubic-bezier(0.4, 0, 0.2, 1)",
-                  }}
-                />
-                
-                {/* Overlay gradient */}
-                <div 
-                  className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent"
-                  style={{
-                    opacity: isActive ? 1 : 0.4,
-                    transition: "opacity 0.5s ease-out",
-                  }}
-                />
-                
-                {/* Caption - only on active slide */}
-                <div 
-                  className="absolute bottom-0 left-0 right-0 p-5 md:p-7"
-                  style={{
-                    opacity: isActive ? 1 : 0,
-                    transform: isActive ? "translateY(0)" : "translateY(15px)",
-                    transition: "all 0.5s cubic-bezier(0.4, 0, 0.2, 1) 0.15s",
-                  }}
-                >
-                  <div className="flex items-end justify-between">
-                    <div>
-                      <p className="font-body text-xs md:text-sm text-white/60 tracking-widest uppercase mb-1.5">
-                        {slide.subtitle}
-                      </p>
-                      <h2 className="font-display text-xl md:text-2xl lg:text-3xl font-semibold text-white leading-tight">
-                        {slide.title}
-                      </h2>
-                    </div>
-                    <span className="font-body text-sm text-white/50">
-                      {slide.year}
-                    </span>
-                  </div>
-                </div>
-                
-                {/* Hover overlay for inactive */}
-                {!isActive && (
-                  <div className="absolute inset-0 bg-black/10 hover:bg-black/0 transition-colors duration-300" />
-                )}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* Mobile Gallery - Single full-width image */}
-        <div className="md:hidden relative h-[55vh] max-h-[450px]">
-          {slides.map((slide, index) => {
-            const isActive = index === activeIndex;
-            
-            return (
-              <div
-                key={index}
-                className="absolute inset-0 overflow-hidden rounded-2xl border-2 border-white/30"
-                style={{
-                  opacity: isActive ? 1 : 0,
-                  transform: isActive ? "scale(1)" : "scale(0.95)",
-                  transition: "all 0.6s cubic-bezier(0.4, 0, 0.2, 1)",
-                  zIndex: isActive ? 20 : 10,
-                  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.35)",
-                }}
-              >
-                {/* Image */}
-                <img
-                  src={slide.image}
-                  alt={slide.title}
-                  className="w-full h-full object-cover"
-                />
-                
-                {/* Overlay gradient */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-                
-                {/* Caption */}
-                <div 
-                  className="absolute bottom-0 left-0 right-0 p-5"
-                  style={{
-                    opacity: isActive ? 1 : 0,
-                    transform: isActive ? "translateY(0)" : "translateY(10px)",
-                    transition: "all 0.5s ease-out 0.2s",
-                  }}
-                >
-                  <p className="font-body text-xs text-white/60 tracking-widest uppercase mb-1">
-                    {slide.subtitle}
-                  </p>
-                  <h2 className="font-display text-xl font-semibold text-white leading-tight">
-                    {slide.title}
-                  </h2>
-                </div>
-              </div>
-            );
-          })}
+      {/* Hero Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-6 text-center">
+        <div className="max-w-4xl mx-auto">
+          {/* Subtitle */}
+          <p className="font-body text-sm md:text-base tracking-[0.4em] uppercase text-white/70 mb-4 animate-fade-up">
+            Premium Custom Emblems
+          </p>
+          
+          {/* Main Title */}
+          <h1 className="font-heading text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight mb-6 animate-fade-up" style={{ animationDelay: "0.2s" }}>
+            Crafted With
+            <span className="block text-gradient-gold mt-2">Excellence & Precision</span>
+          </h1>
+          
+          {/* Description */}
+          <p className="font-body text-base md:text-lg text-white/60 max-w-2xl mx-auto mb-10 animate-fade-up" style={{ animationDelay: "0.4s" }}>
+            Transform your vehicle with our handcrafted custom emblems. 
+            Each piece is meticulously designed and finished to perfection.
+          </p>
+          
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-up" style={{ animationDelay: "0.6s" }}>
+            <a
+              href="#work-samples"
+              className="px-8 py-4 bg-gradient-to-r from-primary to-[#F4E4BC] text-black font-semibold tracking-wide uppercase text-sm rounded-sm hover:shadow-lg hover:shadow-primary/30 transition-all duration-300"
+            >
+              View Our Work
+            </a>
+            <a
+              href="#quote"
+              className="px-8 py-4 border border-white/30 text-white font-semibold tracking-wide uppercase text-sm rounded-sm hover:bg-white/10 transition-all duration-300"
+            >
+              Get a Quote
+            </a>
+          </div>
         </div>
         
-        {/* Slide indicators */}
-        <div className="flex justify-center gap-2.5 mt-8">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => handleClick(index)}
-              className="relative h-2 rounded-full overflow-hidden transition-all duration-400 border border-white/20"
-              style={{
-                width: index === activeIndex ? "40px" : "12px",
-                backgroundColor: index === activeIndex ? "hsl(var(--primary))" : "rgba(255, 255, 255, 0.2)",
-              }}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
+        {/* Scroll indicator */}
+        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
+          <div className="w-6 h-10 border-2 border-white/30 rounded-full flex items-start justify-center p-2">
+            <div className="w-1 h-2 bg-white/60 rounded-full" />
+          </div>
         </div>
       </div>
     </section>
