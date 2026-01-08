@@ -9,25 +9,22 @@ interface PreloaderProps {
 
 const Preloader = ({ onComplete }: PreloaderProps) => {
   const [progress, setProgress] = useState(0);
-  const [brushComplete, setBrushComplete] = useState(false);
 
   useEffect(() => {
-    // Start progress after brush animation begins
     const startDelay = setTimeout(() => {
       const interval = setInterval(() => {
         setProgress((prev) => {
           if (prev >= 100) {
             clearInterval(interval);
-            setTimeout(() => setBrushComplete(true), 300);
-            setTimeout(onComplete, 1200);
+            setTimeout(onComplete, 1000);
             return 100;
           }
-          return prev + 1.5;
+          return prev + 0.8;
         });
-      }, 40);
+      }, 45);
 
       return () => clearInterval(interval);
-    }, 500);
+    }, 800);
 
     return () => clearTimeout(startDelay);
   }, [onComplete]);
@@ -43,7 +40,7 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
     >
       {/* Background chrome particles */}
       <div className="absolute inset-0 overflow-hidden">
-        {[...Array(20)].map((_, i) => (
+        {[...Array(15)].map((_, i) => (
           <motion.div
             key={i}
             className="absolute w-1 h-1 rounded-full bg-gradient-to-r from-gray-300 via-white to-gray-400"
@@ -58,7 +55,7 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
             }}
             transition={{
               duration: 2,
-              delay: 1 + Math.random() * 2,
+              delay: 1.5 + Math.random() * 2,
               repeat: Infinity,
               repeatDelay: Math.random() * 3,
             }}
@@ -68,7 +65,7 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
 
       {/* Main logo container */}
       <div className="relative mb-8">
-        {/* Chrome glow effect behind logo */}
+        {/* Chrome glow effect - only appears as logo is revealed */}
         <motion.div
           className="absolute inset-[-50px] rounded-full"
           style={{
@@ -77,89 +74,83 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
           }}
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ 
-            opacity: brushComplete ? 1 : progress / 100,
-            scale: brushComplete ? 1.2 : 0.8 + (progress / 200),
+            opacity: progress / 150,
+            scale: 0.8 + (progress / 250),
           }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.3 }}
         />
 
-        {/* Logo with reveal mask */}
-        <div className="relative w-80 md:w-[450px] h-24 md:h-32 overflow-hidden">
-          {/* Grayscale version (background) */}
-          <motion.img
-            src={logoEmblem}
-            alt="Your Custom Emblem"
-            className="absolute inset-0 w-full h-full object-contain opacity-20 grayscale"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 0.15 }}
-            transition={{ duration: 0.5 }}
-          />
-          
-          {/* Chrome revealed version */}
+        {/* Logo container with reveal */}
+        <div className="relative w-80 md:w-[500px] h-24 md:h-36 overflow-hidden">
+          {/* Logo ONLY visible where brush has passed */}
           <div className="absolute inset-0 overflow-hidden">
             <motion.div
               className="absolute inset-0"
-              initial={{ clipPath: "inset(0 100% 0 0)" }}
-              animate={{ clipPath: `inset(0 ${100 - progress}% 0 0)` }}
-              transition={{ duration: 0.1, ease: "linear" }}
+              style={{
+                clipPath: `inset(0 ${100 - progress}% 0 0)`,
+              }}
             >
               <img
                 src={logoEmblem}
                 alt="Your Custom Emblem"
-                className="w-full h-full object-contain drop-shadow-2xl"
+                className="w-full h-full object-contain"
                 style={{
-                  filter: "drop-shadow(0 0 10px rgba(192,192,192,0.5)) drop-shadow(0 0 20px rgba(169,169,169,0.3))",
+                  filter: "drop-shadow(0 0 15px rgba(192,192,192,0.6)) drop-shadow(0 0 30px rgba(169,169,169,0.4))",
                 }}
               />
-              {/* Chrome shine overlay */}
+              {/* Chrome shine sweep effect */}
               <motion.div
                 className="absolute inset-0 pointer-events-none"
                 style={{
-                  background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)",
+                  background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%)",
                   backgroundSize: "200% 100%",
                 }}
                 animate={{
                   backgroundPosition: ["200% 0%", "-200% 0%"],
                 }}
                 transition={{
-                  duration: 2,
-                  delay: 2.5,
+                  duration: 1.5,
+                  delay: 6,
                   repeat: Infinity,
-                  repeatDelay: 1,
+                  repeatDelay: 2,
                 }}
               />
             </motion.div>
           </div>
 
-          {/* Animated paintbrush */}
+          {/* Animated paintbrush - positioned at the reveal edge */}
           <motion.div
             className="absolute top-1/2 -translate-y-1/2 z-20"
-            initial={{ left: "-15%", rotate: -30 }}
-            animate={{ 
-              left: `${Math.min(progress, 100)}%`,
-              rotate: [-30, -25, -35, -30],
+            style={{
+              left: `${progress}%`,
+              transform: `translateX(-50%) translateY(-50%)`,
+              display: progress >= 100 ? "none" : "block",
             }}
-            transition={{ 
-              left: { duration: 0.1, ease: "linear" },
-              rotate: { duration: 0.3, repeat: Infinity, ease: "easeInOut" }
-            }}
-            style={{ display: progress >= 100 ? "none" : "block" }}
           >
-            {/* Brush with chrome paint dripping */}
-            <div className="relative">
-              {/* Paint splash effect */}
+            <motion.div
+              className="relative"
+              animate={{
+                rotate: [-35, -25, -35],
+              }}
+              transition={{
+                duration: 0.4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            >
+              {/* Paint glow at brush tip */}
               <motion.div
-                className="absolute -left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full"
+                className="absolute -left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full"
                 style={{
-                  background: "radial-gradient(circle, rgba(192,192,192,0.8) 0%, rgba(169,169,169,0.4) 50%, transparent 70%)",
-                  filter: "blur(4px)",
+                  background: "radial-gradient(circle, rgba(255,255,255,0.9) 0%, rgba(192,192,192,0.6) 40%, transparent 70%)",
+                  filter: "blur(6px)",
                 }}
                 animate={{
-                  scale: [1, 1.3, 1],
-                  opacity: [0.6, 1, 0.6],
+                  scale: [1, 1.4, 1],
+                  opacity: [0.7, 1, 0.7],
                 }}
                 transition={{
-                  duration: 0.4,
+                  duration: 0.3,
                   repeat: Infinity,
                 }}
               />
@@ -167,86 +158,96 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
               {/* Paintbrush icon */}
               <motion.div
                 animate={{
-                  y: [-2, 2, -2],
+                  y: [-3, 3, -3],
+                  x: [-1, 1, -1],
                 }}
                 transition={{
-                  duration: 0.2,
+                  duration: 0.25,
                   repeat: Infinity,
                 }}
               >
                 <Paintbrush 
-                  size={32} 
-                  className="text-gray-300 drop-shadow-lg"
+                  size={36} 
+                  className="text-gray-200"
                   style={{
-                    filter: "drop-shadow(0 0 8px rgba(192,192,192,0.8))",
+                    filter: "drop-shadow(0 0 12px rgba(255,255,255,0.9)) drop-shadow(0 0 20px rgba(192,192,192,0.8))",
                   }}
                 />
               </motion.div>
 
-              {/* Chrome paint trail */}
-              <motion.div
-                className="absolute left-6 top-1/2 -translate-y-1/2 h-1 rounded-full"
-                style={{
-                  width: "30px",
-                  background: "linear-gradient(90deg, rgba(192,192,192,0.8), rgba(220,220,220,0.4), transparent)",
-                }}
-                animate={{
-                  opacity: [0.8, 0.4, 0.8],
-                }}
-                transition={{
-                  duration: 0.3,
-                  repeat: Infinity,
-                }}
-              />
-            </div>
-          </motion.div>
-        </div>
-
-        {/* Sparkle effects when brush passes */}
-        {progress > 20 && progress < 100 && (
-          <>
-            {[...Array(3)].map((_, i) => (
-              <motion.div
-                key={i}
-                className="absolute w-2 h-2"
-                style={{
-                  left: `${progress - 5 - i * 8}%`,
-                  top: `${30 + i * 20}%`,
-                }}
-                initial={{ opacity: 0, scale: 0 }}
-                animate={{ 
-                  opacity: [0, 1, 0],
-                  scale: [0, 1, 0],
-                  y: [0, -10, -20],
-                }}
-                transition={{
-                  duration: 0.6,
-                  repeat: Infinity,
-                  delay: i * 0.15,
-                }}
-              >
-                <div className="w-full h-full bg-white rounded-full" 
-                  style={{ boxShadow: "0 0 6px 2px rgba(255,255,255,0.8)" }} 
+              {/* Chrome paint drips */}
+              {[...Array(3)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute rounded-full bg-gradient-to-b from-white to-gray-400"
+                  style={{
+                    left: `${-5 + i * 4}px`,
+                    top: "20px",
+                    width: "3px",
+                    height: "8px",
+                  }}
+                  animate={{
+                    y: [0, 15, 30],
+                    opacity: [0.8, 0.4, 0],
+                    scale: [1, 0.8, 0.5],
+                  }}
+                  transition={{
+                    duration: 0.8,
+                    repeat: Infinity,
+                    delay: i * 0.2,
+                  }}
                 />
-              </motion.div>
-            ))}
-          </>
-        )}
+              ))}
+            </motion.div>
+          </motion.div>
+
+          {/* Sparkles trailing behind the brush */}
+          {progress > 5 && progress < 100 && (
+            <>
+              {[...Array(4)].map((_, i) => (
+                <motion.div
+                  key={i}
+                  className="absolute"
+                  style={{
+                    left: `${progress - 3 - i * 5}%`,
+                    top: `${35 + i * 10}%`,
+                  }}
+                  initial={{ opacity: 0, scale: 0 }}
+                  animate={{ 
+                    opacity: [0, 1, 0],
+                    scale: [0, 1.2, 0],
+                    y: [0, -15, -30],
+                  }}
+                  transition={{
+                    duration: 0.7,
+                    repeat: Infinity,
+                    delay: i * 0.12,
+                  }}
+                >
+                  <div 
+                    className="w-2 h-2 bg-white rounded-full" 
+                    style={{ boxShadow: "0 0 8px 3px rgba(255,255,255,0.9)" }} 
+                  />
+                </motion.div>
+              ))}
+            </>
+          )}
+        </div>
       </div>
 
       {/* Progress bar */}
       <motion.div
-        className="w-56 h-[3px] bg-white/10 rounded-full overflow-hidden"
+        className="w-64 h-[3px] bg-white/10 rounded-full overflow-hidden"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.3, duration: 0.5 }}
+        transition={{ delay: 0.5, duration: 0.5 }}
       >
         <motion.div
           className="h-full rounded-full"
           style={{ 
             width: `${progress}%`,
-            background: "linear-gradient(90deg, #A0A0A0, #E8E8E8, #C0C0C0, #FFFFFF, #C0C0C0)",
-            boxShadow: "0 0 10px rgba(192,192,192,0.5)",
+            background: "linear-gradient(90deg, #909090, #E8E8E8, #C0C0C0, #FFFFFF, #D0D0D0)",
+            boxShadow: "0 0 12px rgba(255,255,255,0.6)",
           }}
           transition={{ duration: 0.1 }}
         />
@@ -254,15 +255,15 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
 
       {/* Loading text */}
       <motion.p
-        className="mt-6 text-sm tracking-[0.3em] uppercase"
+        className="mt-6 text-sm tracking-[0.3em] uppercase font-light"
         style={{
-          background: "linear-gradient(90deg, #A0A0A0, #E0E0E0, #A0A0A0)",
+          background: "linear-gradient(90deg, #A0A0A0, #E8E8E8, #A0A0A0)",
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
         }}
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 0.6 }}
+        transition={{ delay: 0.8 }}
       >
         Crafting Your Vision
       </motion.p>
