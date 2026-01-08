@@ -79,9 +79,6 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
                 src={logoEmblem}
                 alt="Your Custom Emblem"
                 className="w-full h-full object-contain"
-                style={{
-                  filter: "drop-shadow(0 0 15px rgba(192,192,192,0.6)) drop-shadow(0 0 30px rgba(169,169,169,0.4))",
-                }}
               />
               {/* Chrome shine sweep effect */}
               <motion.div
@@ -135,7 +132,7 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
                 }}
               >
                 <Paintbrush 
-                  size={36} 
+                  size={56} 
                   className="text-gray-200"
                   style={{
                     filter: "drop-shadow(0 0 12px rgba(255,255,255,0.9)) drop-shadow(0 0 20px rgba(192,192,192,0.8))",
