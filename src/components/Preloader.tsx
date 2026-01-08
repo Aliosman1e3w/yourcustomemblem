@@ -65,21 +65,6 @@ const Preloader = ({ onComplete }: PreloaderProps) => {
 
       {/* Main logo container */}
       <div className="relative mb-8">
-        {/* Chrome glow effect - only appears as logo is revealed */}
-        <motion.div
-          className="absolute inset-[-50px] rounded-full"
-          style={{
-            background: "radial-gradient(ellipse, rgba(192,192,192,0.3) 0%, rgba(169,169,169,0.15) 40%, transparent 70%)",
-            filter: "blur(30px)",
-          }}
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ 
-            opacity: progress / 150,
-            scale: 0.8 + (progress / 250),
-          }}
-          transition={{ duration: 0.3 }}
-        />
-
         {/* Logo container with reveal */}
         <div className="relative w-80 md:w-[500px] h-24 md:h-36 overflow-hidden">
           {/* Logo ONLY visible where brush has passed */}
